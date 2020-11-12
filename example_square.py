@@ -1,4 +1,4 @@
-from square import *
+from protocols.square import *
 import random
 
 # params

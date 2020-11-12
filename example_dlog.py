@@ -1,4 +1,4 @@
-from dlog import *
+from protocols.dlog import *
 import random
 
 # params
