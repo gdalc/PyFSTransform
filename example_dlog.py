@@ -3,11 +3,9 @@ import random
 
 # zero knowledge protocol
 zkp = dlog()
-p = zkp.getModule()
-
-secret = random.randint(2,p-2)
-Alice = zkp.Prover(secret)
-Bob = zkp.Verifier()
+Alice = zkp.prover
+zkp.setSecret()
+Bob = zkp.verifier
 result = []
 for i in range(4):
     # 1
