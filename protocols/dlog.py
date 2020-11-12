@@ -4,7 +4,9 @@
 import random
 
 class dlog:
-    def __init__(self, module, generator):
+    # module = prime number defining the multiplicative group
+    # generator = an element generating the multiplicative group of F_p
+    def __init__(self, module = 2**127 + 45, generator = 3):
         self.param = {"module" : module, "generator" : generator, "n_chall" : 2}
         self.target = 0
         self.round = -1

@@ -1,11 +1,9 @@
 from protocols.dlog import *
 import random
 
-# params
-p = 2**127 + 45
-g = random.randint(1,p - 1)
 # zero knowledge protocol
-zkp = dlog(p, g)
+zkp = dlog()
+p = zkp.getModule()
 
 secret = random.randint(2,p-2)
 Alice = zkp.Prover(secret)

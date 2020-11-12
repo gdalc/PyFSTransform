@@ -4,7 +4,8 @@
 import random
 
 class square:
-    def __init__(self, module, generator):
+    # module = integer defining the ring Z_n
+    def __init__(self, module = 2**127 + 45):
         self.param = {"module" : module, "n_chall" : 2}
         self.target = 0
         self.round = -1
@@ -30,12 +31,12 @@ class square:
             self.setup_data = []
 
     def proverSetup(self, prover):
-        p = self.getModule()
+        n = self.getModule()
         if self.target == 0:
-            self.target = (prover.secret**2)%p
+            self.target = ( prover.secret**2 ) % n
         self.nextRound()        
-        r = random.randint(0,p-1)
-        a = (r**2) % p
+        r = random.randint(0,n-1)
+        a = (r**2) % n
         prover.setup_data.append([r, a])
         self.setups.append(a)
         
@@ -49,8 +50,8 @@ class square:
             self.resps.append(r)
         elif bit == 1:
             # sends r*secret
-            p = self.getModule()
-            self.resps.append( (prover.secret*r) % p )
+            n = self.getModule()
+            self.resps.append( (prover.secret*r) % n )
         else:
             assert False, "Error challenge bit"
 
@@ -61,23 +62,22 @@ class square:
     def verifierChall(self, verifier):
         challenge_bit = random.randint(0,self.getN_chall() - 1)
         self.challenge_bits.append(challenge_bit)
-        return challenge_bit
     
     def verifierOutput(self, verifier):
         round = self.round
         bit = self.challenge_bits[round]
         a = self.setups[round]
-        p = self.getModule()
+        n = self.getModule()
         if bit == 0:
             # checks r^2 == a
             r = self.resps[round]
-            out = (r**2) % p == a
+            out = (r**2) % n == a
             return out
         elif bit == 1:
             # checks (r*secret)^2 == a*y
             root = self.resps[round]
             y = self.target
-            out = (root**2) % p == (a*y) % p
+            out = (root**2) % n == (a*y) % n
             return out
         else:
             assert False, "Error challenge bit"
