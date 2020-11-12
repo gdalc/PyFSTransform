@@ -43,11 +43,10 @@ class Signature:
             self.protocol.nextRound()
         return True
 
-        self.verifierOutput(self.protocol.verifier)
-
-
-zkp = square() #or set zkp = dlog()
-zkp.setSecret()
-FST = Signature(zkp)
-signature = FST.sign("a")
-print(FST.verify("a", signature))
+if __name__ == '__main__':
+    zkp = square() #or set zkp = dlog()
+    zkp.setSecret()
+    FST = Signature(zkp)
+    document = "0123456789"
+    signature = FST.sign(document)
+    print(FST.verify(document, signature))
