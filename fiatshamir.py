@@ -19,12 +19,12 @@ class Signature:
 
     def sign(self, document):
         for i in range(self.security):
-            self.protocol.proverSetup(self.protocol.prover)
+            self.protocol.proverSetup()
         cmt = self.protocol.setups
         self.protocol.challenge_bits = self.setChallengeBits(document, cmt)
         self.protocol.round = 0
         for i in range(self.security):
-            self.protocol.proverResp(self.protocol.prover)
+            self.protocol.proverResp()
             self.protocol.nextRound()
         return [self.protocol.setups, self.protocol.resps]
     
@@ -38,7 +38,7 @@ class Signature:
         for i in range(self.security):
             current_cmt = cmt[self.protocol.round]
             current_bit = bits[self.protocol.round]
-            if False == self.protocol.verifierOutput(self.protocol.verifier, current_bit, current_cmt):
+            if False == self.protocol.verifierOutput(current_bit, current_cmt):
                 return False
             self.protocol.nextRound()
         return True

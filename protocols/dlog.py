@@ -46,37 +46,37 @@ class dlog:
     def getRound(self):
         return self.round
 
-    def proverSetup(self, prover):
+    def proverSetup(self):
         if self.target == 0:
-            self.target = pow(self.getGen(), prover.secret, self.getModule())
+            self.target = pow(self.getGen(), self.prover.secret, self.getModule())
         self.nextRound()
         p = self.getModule()
         r = random.randint(0,p-1)
         g = self.getGen()
         C = pow(g,r,p)
-        prover.setup_data.append([r, C])
+        self.prover.setup_data.append([r, C])
         self.setups.append(C)
     
-    def proverResp(self, prover):
+    def proverResp(self):
         round = self.round
         bit = self.challenge_bits[round]
-        r = prover.setup_data[round][0]
+        r = self.prover.setup_data[round][0]
         if bit == 0:
             # sends g^r
             self.resps.append(r)
         elif bit == 1:
             # sends x+r mod p-1
             p = self.getModule()
-            self.resps.append( (prover.secret + r) % (p-1) )
+            self.resps.append( (self.prover.secret + r) % (p-1) )
         else:
             assert False, "Error challenge bit"
 
-    def verifierChall(self, verifier):
+    def verifierChall(self):
         challenge_bit = random.randint(0,self.getN_chall() - 1)
         self.challenge_bits.append(challenge_bit)
         return challenge_bit
     
-    def verifierOutput(self, verifier, bit = None, C = None):
+    def verifierOutput(self, bit = None, C = None):
         round = self.round
         if bit == None:
             bit = self.challenge_bits[round]
