@@ -6,18 +6,19 @@ zkp = square()
 n = zkp.getModule()
 
 secret = random.randint(2,n-2)
-Alice = zkp.Prover(secret)
-Bob = zkp.Verifier()
+Alice = zkp.prover
+zkp.setSecret()
+Bob = zkp.verifier
 result = []
 for i in range(4):
     # 1
-    zkp.proverSetup(Alice)
+    zkp.proverSetup()
     # 2
-    zkp.verifierChall(Bob)
+    zkp.verifierChall()
     # 3
-    zkp.proverResp(Alice)
+    zkp.proverResp()
     # 4
-    result.append(zkp.verifierOutput(Bob))
+    result.append(zkp.verifierOutput())
 
 print("Challenges: ", zkp.challenge_bits)
 print("Results: ", result)

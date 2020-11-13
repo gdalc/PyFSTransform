@@ -5,13 +5,12 @@ import random
 
 
 class Prover:
-        def __init__(self, secret = None):
-            self.secret = secret
-            self.setup_data = []
+    def __init__(self, secret = None):
+        self.secret = secret
+        self.setup_data = []
 
 class Verifier:
-        def __init__(self):
-            return None
+    pass
 
 class dlog:
     # module = prime number defining the multiplicative group
