@@ -2,28 +2,16 @@
 # Discrete logarithm zero knoledge protocol definition
 #
 import random
+from protocols.types import *
 
-
-class Prover:
-    def __init__(self, secret = None):
-        self.secret = secret
-        self.setup_data = []
-
-class Verifier:
-    pass
-
-class dlog:
+class dlog(ZKProtocol):
     # module = prime number defining the multiplicative group
     # generator = an element generating the multiplicative group of F_p
     def __init__(self, secret = None, module = 2**127 + 45, generator = 3):
         self.param = {"module" : module, "generator" : generator, "n_chall" : 2}
-        self.target = 0
-        self.round = -1
-        self.setups = []
-        self.challenge_bits = []
-        self.resps = []
         self.prover = Prover(secret)
         self.verifier = Verifier()
+        super().__init__("Discrete Log in F_" + str(module) + " with generator " + str(generator))
 
     def setSecret(self, secret = None):
         if secret == None:
@@ -31,20 +19,11 @@ class dlog:
         else:
             self.prover.secret = secret
 
-    def nextRound(self):
-        self.round += 1
-
     def getModule(self):
         return self.param["module"]
     
     def getGen(self):
         return self.param["generator"]
-    
-    def getN_chall(self):
-        return self.param["n_chall"]
-    
-    def getRound(self):
-        return self.round
 
     def proverSetup(self):
         if self.target == 0:
@@ -55,7 +34,7 @@ class dlog:
         g = self.getGen()
         C = pow(g,r,p)
         self.prover.setup_data.append([r, C])
-        self.setups.append(C)
+        self.commitments.append(C)
     
     def proverResp(self):
         round = self.round
@@ -81,7 +60,7 @@ class dlog:
         if bit == None:
             bit = self.challenge_bits[round]
         if C == None:
-            C = self.setups[round]
+            C = self.commitments[round]
         p = self.getModule()
         g = self.getGen()
         if bit == 0:

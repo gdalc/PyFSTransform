@@ -2,44 +2,24 @@
 # Square zero knoledge protocol definition
 #
 import random
+from protocols.types import *
 
-class Prover:
-    def __init__(self, secret = None):
-        self.secret = secret
-        self.setup_data = []
-
-class Verifier:
-    pass
-
-class square:
+class square(ZKProtocol):
     # module = integer defining the ring Z_n
     def __init__(self, secret = None, module = 2**127 + 45):
         self.param = {"module" : module, "n_chall" : 2}
-        self.target = 0
-        self.round = -1
-        self.setups = []
-        self.challenge_bits = []
-        self.resps = []
         self.prover = Prover(secret)
         self.verifier = Verifier()
+        super().__init__("Square on " + str(module))
     
     def setSecret(self, secret = None):
         if secret == None:
             self.prover.secret = random.randint(2,self.getModule()-2)
         else:
             self.prover.secret = secret
-    
-    def nextRound(self):
-        self.round += 1
 
     def getModule(self):
         return self.param["module"]
-    
-    def getN_chall(self):
-        return self.param["n_chall"]
-    
-    def getRound(self):
-        return self.round
 
     def proverSetup(self):
         n = self.getModule()
@@ -49,7 +29,7 @@ class square:
         r = random.randint(0,n-1)
         a = (r**2) % n
         self.prover.setup_data.append([r, a])
-        self.setups.append(a)
+        self.commitments.append(a)
         
     
     def proverResp(self):
@@ -75,7 +55,7 @@ class square:
         if bit == None:
             bit = self.challenge_bits[round]
         if a == None:
-            a = self.setups[round]
+            a = self.commitments[round]
         n = self.getModule()
         if bit == 0:
             # checks r^2 == a

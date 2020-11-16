@@ -10,6 +10,7 @@ class Signature:
         self.hash = hash
         self.sk = protocol.prover.secret
         self.pk = protocol.param
+        print("Signature based on " + protocol.name + " initiazized.")
         return None
 
     def setChallengeBits(self, document, cmt):
@@ -20,13 +21,13 @@ class Signature:
     def sign(self, document):
         for i in range(self.security):
             self.protocol.proverSetup()
-        cmt = self.protocol.setups
+        cmt = self.protocol.commitments
         self.protocol.challenge_bits = self.setChallengeBits(document, cmt)
-        self.protocol.round = 0
+        self.protocol.setRound(0)
         for i in range(self.security):
             self.protocol.proverResp()
             self.protocol.nextRound()
-        return [self.protocol.setups, self.protocol.resps]
+        return [self.protocol.commitments, self.protocol.resps]
     
     def verify(self, document, signature):
         cmt = signature[0]
@@ -34,7 +35,7 @@ class Signature:
         bits = self.setChallengeBits(document, cmt)
         if bits != self.protocol.challenge_bits:
             return 0
-        self.protocol.round = 0
+        self.protocol.setRound(0)
         for i in range(self.security):
             current_cmt = cmt[self.protocol.round]
             current_bit = bits[self.protocol.round]
@@ -49,4 +50,4 @@ if __name__ == '__main__':
     FST = Signature(zkp)
     document = "0123456789"
     signature = FST.sign(document)
-    print(FST.verify(document, signature))
+    print("Verification: ", FST.verify(document, signature))
